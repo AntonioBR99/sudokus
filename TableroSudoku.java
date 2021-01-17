@@ -6,7 +6,7 @@ import java.util.*;
 
 public class TableroSudoku implements Cloneable {
 	
-	// constantes relativas al nº de filas y columnas del tablero
+	// constantes relativas al nï¿½ de filas y columnas del tablero
 	protected static final int MAXVALOR=9; 
 	protected static final int FILAS=9; 
 	protected static final int COLUMNAS=9; 
@@ -89,7 +89,7 @@ public class TableroSudoku implements Cloneable {
 		return celdas[fila][columna] == 0;
 	}
 	
-	// devuelve el número de casillas libres en un sudoku.
+	// devuelve el nï¿½mero de casillas libres en un sudoku.
 	protected int numeroDeLibres() {
 		int n=0;
 	    for (int f = 0; f < FILAS; f++) 
@@ -106,27 +106,55 @@ public class TableroSudoku implements Cloneable {
 	// Devuelve true si @valor ya esta en la fila @fila.
 	protected boolean estaEnFila(int fila, int valor) {
 		// A completar por el alumno
-		return false;
+		boolean encontrado =false;
+		for(int i =0;i<celdas.length  ^ !encontrado;i++){
+			if(celdas[fila][i]== valor) encontrado=true;
+		}
+		return encontrado;
+
 	}    
 
 	// Devuelve true si @valor ya esta en la columna @columna.
 	protected boolean estaEnColumna(int columna, int valor) {
 		// A completar por el alumno
-		return false;
+		boolean encontrado = false;
+		for(int i=0;i<celdas.length ^!encontrado;i++){
+			if(celdas[i][columna] == valor) encontrado =true;
+		}
+		return encontrado;
 	}    
-	
+	protected int inicioSubtablero(int x){
+		int k,resultado;
+		if(x % 3 == 0) k = x/3;
+		else k = x/3 +1;
+		switch(k){
+			case 1: resultado=1;
+			case 2: resultado=4;
+			case 3: resultado=7;
+		}
+		return resultado;
+
+	}
 
 	// Devuelve true si @valor ya esta en subtablero al que pertence @fila y @columna.
 	protected boolean estaEnSubtablero(int fila, int columna, int valor) {
 		// A completar por el alumno	
-		return false;		
+		int i = inicioSubtablero(fila);
+		int j= inicioSubtablero(columna);
+		boolean encontrado = false;
+		for(i;i<i+3 ^!encontrado;i++){
+			for(j;j<j+3 ^!encontrado;j++){
+				if(celdas[i][j] == valor) encontrado =true;
+			}
+		}
+		return encontrado;		
 	}    
 
 	
 	// Devuelve true si se puede colocar el @valor en la @fila y @columna dadas.
 	protected boolean sePuedePonerEn(int fila, int columna, int valor) {
 		// A completar por el alumno
-		return false;
+		return !estaEnColumna(columna, valor) && !estaEnFila(fila, valor) && !estaEnSubtablero(fila, columna, valor);
 	}
 	
 	
