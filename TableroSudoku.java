@@ -125,6 +125,7 @@ public class TableroSudoku implements Cloneable {
 	}    
 	protected int inicioSubtablero(int x){
 		int k,resultado;
+		resultado=0;
 		if(x % 3 == 0) k = x/3;
 		else k = x/3 +1;
 		switch(k){
@@ -139,11 +140,10 @@ public class TableroSudoku implements Cloneable {
 	// Devuelve true si @valor ya esta en subtablero al que pertence @fila y @columna.
 	protected boolean estaEnSubtablero(int fila, int columna, int valor) {
 		// A completar por el alumno	
-		int i = inicioSubtablero(fila);
-		int j= inicioSubtablero(columna);
+		
 		boolean encontrado = false;
-		for(i;i<i+3 ^!encontrado;i++){
-			for(j;j<j+3 ^!encontrado;j++){
+		for(int i = inicioSubtablero(fila);i<i+3 ^!encontrado;i++){
+			for(int j= inicioSubtablero(columna);j<j+3 ^!encontrado;j++){
 				if(celdas[i][j] == valor) encontrado =true;
 			}
 		}
@@ -162,8 +162,37 @@ public class TableroSudoku implements Cloneable {
 
 	protected void resolverTodos(List<TableroSudoku> soluciones, int fila, int columna) {
 		// A completar por el alumno
+		if(numeroDeLibres() ==0){
+			soluciones.add(new TableroSudoku(this));
+		}else{
+			if(celdas[fila][columna]!=0){
+				for(int c=1;c<9;c++){
+					celdas[fila][columna] = c;
+					if(sePuedePonerEn(fila, columna, c)){
+						if(fila==8^columna==8){
+							soluciones.add(new TableroSudoku(this));
+						}else if(fila < 8 ^columna==8){
+							resolverTodos(soluciones,fila+1,1);
+		
+						}else if(fila <=8^columna<8){
+							resolverTodos(soluciones,fila,columna+1);
+						}
+					}
+					celdas[fila][columna] =0;
+				}
+			}else{
+				if(fila==8^columna==8){
+					soluciones.add(new TableroSudoku(this));
+				}else if(fila < 8 ^columna==8){
+					resolverTodos(soluciones,fila+1,1);
+
+				}else if(fila <=8^columna<8){
+					resolverTodos(soluciones,fila,columna+1);
+				}
+			}
+		}
 	}
-	
+
 
 	public List<TableroSudoku> resolverTodos() {
         List<TableroSudoku> sols  = new LinkedList<TableroSudoku>();
