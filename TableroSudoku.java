@@ -106,48 +106,36 @@ public class TableroSudoku implements Cloneable {
 	// Devuelve true si @valor ya esta en la fila @fila.
 	protected boolean estaEnFila(int fila, int valor) {
 		// A completar por el alumno
-		boolean encontrado =false;
-		for(int i =0;i<celdas.length  ^ !encontrado;i++){
-			if(celdas[fila][i]== valor) encontrado=true;
+		boolean valido= false;
+		for(int i=0;i<COLUMNAS && !valido;i++){
+			if(celdas[fila][i] == valor){valido = true;}
 		}
-		return encontrado;
-
+		return valido;
 	}    
 
 	// Devuelve true si @valor ya esta en la columna @columna.
 	protected boolean estaEnColumna(int columna, int valor) {
 		// A completar por el alumno
-		boolean encontrado = false;
-		for(int i=0;i<celdas.length ^!encontrado;i++){
-			if(celdas[i][columna] == valor) encontrado =true;
+		boolean valido= false;
+		for(int i=0;i<FILAS && !valido;i++){
+			if(celdas[i][columna] == valor){valido = true;}
 		}
-		return encontrado;
+		return valido;
 	}    
-	protected int inicioSubtablero(int x){
-		int k,resultado;
-		resultado=0;
-		if(x % 3 == 0) k = x/3;
-		else k = x/3 +1;
-		switch(k){
-			case 1: resultado=1;
-			case 2: resultado=4;
-			case 3: resultado=7;
-		}
-		return resultado;
-
-	}
 
 	// Devuelve true si @valor ya esta en subtablero al que pertence @fila y @columna.
 	protected boolean estaEnSubtablero(int fila, int columna, int valor) {
-		// A completar por el alumno	
-		
-		boolean encontrado = false;
-		for(int i = inicioSubtablero(fila);i<i+3 ^!encontrado;i++){
-			for(int j= inicioSubtablero(columna);j<j+3 ^!encontrado;j++){
-				if(celdas[i][j] == valor) encontrado =true;
+		// A completar por el alumno		
+		boolean res = false;
+		for(int fi =fila - (fila%3);fi< (fila - (fila%3)  +3)  && !res;fi++){
+			for(int co=columna - (columna%3);co < (columna - (columna%3) +3) && !res;co++ ){
+				if(celdas[fi][co]==valor) {
+					res=true;
+				}
 			}
 		}
-		return encontrado;		
+		return res;	
+		
 	}    
 
 	
@@ -156,43 +144,36 @@ public class TableroSudoku implements Cloneable {
 		// A completar por el alumno
 		return !estaEnColumna(columna, valor) && !estaEnFila(fila, valor) && !estaEnSubtablero(fila, columna, valor);
 	}
-	
-	
-	
 
 	protected void resolverTodos(List<TableroSudoku> soluciones, int fila, int columna) {
 		// A completar por el alumno
-		if(numeroDeLibres() ==0){
-			soluciones.add(new TableroSudoku(this));
-		}else{
-			if(celdas[fila][columna]!=0){
-				for(int c=1;c<9;c++){
-					celdas[fila][columna] = c;
-					if(sePuedePonerEn(fila, columna, c)){
-						if(fila==8^columna==8){
-							soluciones.add(new TableroSudoku(this));
-						}else if(fila < 8 ^columna==8){
-							resolverTodos(soluciones,fila+1,1);
-		
-						}else if(fila <=8^columna<8){
-							resolverTodos(soluciones,fila,columna+1);
-						}
-					}
-					celdas[fila][columna] =0;
+		if(estaLibre(fila, columna)){ //si esta escrita ya significa que es de las fijas dadas
+			for(int c=1;c<=MAXVALOR;c++){
+				if(sePuedePonerEn(fila, columna, c)){
+					celdas[fila][columna] = c; //coge el valor
+					if(fila== FILAS-1 && columna == COLUMNAS-1){ //celdas completas
+						soluciones.add(new TableroSudoku(this));
+					}else if(fila < FILAS-1 && columna==FILAS-1){ //termino columnas, bajo una fila y vuelvo al inicio
+						resolverTodos(soluciones,fila+1,0);
+					}else {										//sigo en la misma fila
+						resolverTodos(soluciones,fila,columna+1);
+					} 	
+					
 				}
-			}else{
-				if(fila==8^columna==8){
+				celdas[fila][columna] = 0; //resetea a 0 para las siguientes iteraciones
+				
+			}
+		}else {
+			
+				if(fila==FILAS-1 && columna==COLUMNAS-1){
 					soluciones.add(new TableroSudoku(this));
-				}else if(fila < 8 ^columna==8){
-					resolverTodos(soluciones,fila+1,1);
-
-				}else if(fila <=8^columna<8){
+				}else if(fila < FILAS-1 && columna==COLUMNAS-1){
+					resolverTodos(soluciones,fila+1,0);
+				}else {
 					resolverTodos(soluciones,fila,columna+1);
 				}
-			}
 		}
 	}
-
 
 	public List<TableroSudoku> resolverTodos() {
         List<TableroSudoku> sols  = new LinkedList<TableroSudoku>();
